@@ -21,11 +21,11 @@ export function Navbar() {
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
           <div style={{
             width: 32, height: 32, borderRadius: 10,
-            background: 'linear-gradient(135deg, #16a34a, #22c55e)',
+            background: 'linear-gradient(135deg, #7c3aed, #a855f7)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16,
           }}>🏢</div>
           <span style={{ fontWeight: 700, fontSize: 16, color: '#f0f0ff', letterSpacing: '-0.3px' }}>
-            Agent<span style={{ background: 'linear-gradient(135deg, #4ade80, #86efac)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Office</span>
+            Agent<span style={{ background: 'linear-gradient(135deg, #c084fc, #818cf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Office</span>
           </span>
         </Link>
 
