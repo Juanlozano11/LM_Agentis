@@ -62,7 +62,7 @@ export function Navbar() {
                   border: '2px solid rgba(168,85,247,0.4)', cursor: 'pointer',
                 }} onClick={() => signOut()} title="Sign out" />
               )}
-              <span style={{ fontSize: 13, color: '#c084fc', fontWeight: 500 }}>
+              <span style={{ fontSize: 13, color: '#4ade80', fontWeight: 500 }}>
                 {user?.firstName ?? user?.emailAddresses[0]?.emailAddress}
               </span>
             </div>
