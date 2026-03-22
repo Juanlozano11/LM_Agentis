@@ -48,47 +48,66 @@ function makeDeskTop() {
   return t
 }
 
-// ─── Window with outdoor view ─────────────────────────────────────────────────
+// ─── City skyline window view (dusk) ──────────────────────────────────────────
 const CozyWindow = memo(() => (
   <group position={[0, WH * 0.54, -HD + 0.05]}>
-    {/* Frame */}
+    {/* Frame — dark modern */}
     {[
-      { p: [0, 0.8, 0] as [number,number,number], s: [2.4, 0.1, 0.1] as [number,number,number] },
-      { p: [0, -0.8, 0] as [number,number,number], s: [2.4, 0.1, 0.1] as [number,number,number] },
-      { p: [-1.2, 0, 0] as [number,number,number], s: [0.1, 1.6, 0.1] as [number,number,number] },
-      { p: [1.2, 0, 0] as [number,number,number], s: [0.1, 1.6, 0.1] as [number,number,number] },
-      { p: [0, 0, 0] as [number,number,number], s: [0.06, 1.6, 0.06] as [number,number,number] },  // center mullion
-      { p: [0, 0, 0] as [number,number,number], s: [2.4, 0.06, 0.06] as [number,number,number] },  // mid rail
+      { p: [0, 0.9, 0] as [number,number,number], s: [3.2, 0.1, 0.12] as [number,number,number] },
+      { p: [0, -0.9, 0] as [number,number,number], s: [3.2, 0.1, 0.12] as [number,number,number] },
+      { p: [-1.6, 0, 0] as [number,number,number], s: [0.1, 1.8, 0.12] as [number,number,number] },
+      { p: [1.6, 0, 0] as [number,number,number], s: [0.1, 1.8, 0.12] as [number,number,number] },
+      { p: [0, 0, 0] as [number,number,number], s: [0.06, 1.8, 0.08] as [number,number,number] },
     ].map((f, i) => (
-      <mesh key={i} position={f.p}><boxGeometry args={f.s} /><meshStandardMaterial color="#d4c8a8" roughness={0.7} /></mesh>
+      <mesh key={i} position={f.p}><boxGeometry args={f.s} /><meshStandardMaterial color="#1a1a2e" roughness={0.5} metalness={0.3} /></mesh>
     ))}
-    {/* Glass */}
-    <mesh position={[0, 0, 0.02]}>
-      <planeGeometry args={[2.28, 1.54]} />
-      <meshStandardMaterial color="#b8d8f0" emissive="#8abce8" emissiveIntensity={0.55} transparent opacity={0.28} side={THREE.DoubleSide} />
+    {/* Dusk sky gradient */}
+    <mesh position={[0, 0.3, -2]}>
+      <planeGeometry args={[6, 2.5]} />
+      <meshStandardMaterial color="#1a0a2e" emissive="#2a0a4a" emissiveIntensity={1} side={THREE.DoubleSide} />
     </mesh>
-    {/* Sky outside */}
-    <mesh position={[0, 0, -1.5]}>
-      <planeGeometry args={[4, 3.5]} />
-      <meshStandardMaterial color="#87ceeb" emissive="#5aabdf" emissiveIntensity={0.6} side={THREE.DoubleSide} />
+    <mesh position={[0, -0.3, -2]}>
+      <planeGeometry args={[6, 1.2]} />
+      <meshStandardMaterial color="#ff4500" emissive="#ff6020" emissiveIntensity={0.6} transparent opacity={0.4} side={THREE.DoubleSide} />
     </mesh>
-    {/* Clouds */}
-    {[[-0.6, 0.3], [0.5, 0.1], [-0.1, -0.2]].map(([cx, cy], i) => (
-      <mesh key={i} position={[cx, cy, -1.4]}>
-        <sphereGeometry args={[0.22 + i * 0.07, 8, 6]} />
-        <meshStandardMaterial color="#ffffff" emissive="#e8f4ff" emissiveIntensity={0.8} transparent opacity={0.85} />
+    {/* City buildings silhouette */}
+    {[
+      [-1.3, -0.55, 0.9, 0.6],
+      [-0.8, -0.4, 0.5, 0.9],
+      [-0.2, -0.45, 0.6, 0.8],
+      [0.4, -0.35, 0.55, 1.0],
+      [1.0, -0.5, 0.7, 0.7],
+      [1.5, -0.6, 0.5, 0.5],
+      [-1.6, -0.6, 0.4, 0.5],
+    ].map(([bx, by, bw, bh], i) => (
+      <mesh key={i} position={[bx, by, -1.8]}>
+        <boxGeometry args={[bw, bh, 0.05]} />
+        <meshStandardMaterial color="#0a0818" roughness={1} />
       </mesh>
     ))}
-    {/* Trees */}
-    {[[-0.8, -0.55], [0.7, -0.55]].map(([tx, ty], i) => (
-      <group key={i} position={[tx, ty, -1.3]}>
-        <mesh position={[0, 0, 0]}><cylinderGeometry args={[0.025, 0.035, 0.4, 6]} /><meshStandardMaterial color="#5a3820" roughness={0.9} /></mesh>
-        <mesh position={[0, 0.25, 0]}><sphereGeometry args={[0.18, 8, 8]} /><meshStandardMaterial color={i === 0 ? '#2e6620' : '#3a7828'} emissive="#1a4010" emissiveIntensity={0.3} /></mesh>
-      </group>
+    {/* Building windows (lights) */}
+    {[
+      [-1.3, -0.3], [-1.1, -0.45], [-0.8, -0.15], [-0.5, -0.3], [-0.2, -0.2],
+      [0.1, -0.35], [0.4, -0.1], [0.7, -0.25], [1.0, -0.3], [1.3, -0.45],
+      [-1.4, -0.6], [0.3, -0.6], [0.9, -0.55], [-0.6, -0.55],
+    ].map(([wx, wy], i) => (
+      <mesh key={i} position={[wx, wy, -1.75]}>
+        <planeGeometry args={[0.06, 0.05]} />
+        <meshStandardMaterial
+          color={['#ffe090','#90c0ff','#ffb060','#c0e0ff'][i % 4]}
+          emissive={['#ffe090','#90c0ff','#ffb060','#c0e0ff'][i % 4]}
+          emissiveIntensity={1.5}
+        />
+      </mesh>
     ))}
-    {/* Sunlight through window */}
-    <pointLight position={[0, 0, 2]} intensity={8} distance={12} color="#ffe8b0" />
-    <spotLight position={[0, 0.5, 4]} angle={0.5} penumbra={0.9} intensity={12} color="#fff4d0" />
+    {/* Glass pane */}
+    <mesh position={[0, 0, 0.02]}>
+      <planeGeometry args={[3.08, 1.78]} />
+      <meshStandardMaterial color="#6080c0" emissive="#3050a0" emissiveIntensity={0.2} transparent opacity={0.15} side={THREE.DoubleSide} />
+    </mesh>
+    {/* Ambient glow from city */}
+    <pointLight position={[0, 0, 2]} intensity={5} distance={10} color="#6030c0" />
+    <spotLight position={[0, 0.5, 4]} angle={0.6} penumbra={1} intensity={8} color="#8040e0" />
   </group>
 ))
 
@@ -414,78 +433,114 @@ const CozyRug = memo(({ color }: { color: string }) => (
   </group>
 ))
 
-// ─── Room shell (cozy home office) ───────────────────────────────────────────
+// ─── Room shell (dark modern office) ─────────────────────────────────────────
 const HomeRoom = memo(({ color }: { color: string }) => {
   const floor = useMemo(() => makeWoodFloor(), [])
   return (
     <group>
-      {/* Floor */}
+      {/* Floor — dark wood */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[RW, RD]} />
-        <meshStandardMaterial map={floor} roughness={0.35} metalness={0.02} />
+        <meshStandardMaterial map={floor} color="#6a4828" roughness={0.4} metalness={0.04} />
       </mesh>
-      {/* Ceiling */}
+      {/* Ceiling — dark */}
       <mesh position={[0, WH, 0]} rotation={[Math.PI / 2, 0, 0]}>
         <planeGeometry args={[RW, RD]} />
-        <meshStandardMaterial color="#f5f0e8" roughness={1} />
+        <meshStandardMaterial color="#0d0d1a" roughness={1} />
       </mesh>
-      {/* Ceiling light (warm pendant) */}
+      {/* Ceiling LED strip accent */}
+      <mesh position={[0, WH - 0.02, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[RW - 1, RD - 1]} />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.12} transparent opacity={0.18} />
+      </mesh>
+      {/* Ceiling pendant light */}
       <group position={[-0.5, WH - 0.01, -0.5]}>
-        <Cylinder args={[0.004, 0.004, 0.45, 6]} position={[0, -0.22, 0]}>
-          <meshStandardMaterial color="#888070" metalness={0.7} roughness={0.3} />
+        <Cylinder args={[0.006, 0.006, 0.5, 6]} position={[0, -0.25, 0]}>
+          <meshStandardMaterial color="#333340" metalness={0.8} roughness={0.2} />
         </Cylinder>
-        <mesh position={[0, -0.48, 0]}>
-          <sphereGeometry args={[0.12, 12, 12, 0, Math.PI * 2, 0, Math.PI * 0.65]} />
-          <meshStandardMaterial color="#d4c090" roughness={0.5} side={THREE.DoubleSide} />
+        <mesh position={[0, -0.52, 0]}>
+          <cylinderGeometry args={[0.18, 0.08, 0.22, 16, 1, true]} />
+          <meshStandardMaterial color="#1a1a2e" roughness={0.3} metalness={0.6} side={THREE.DoubleSide} />
         </mesh>
-        <pointLight position={[0, -0.55, 0]} intensity={6} distance={9} color="#ffd080" castShadow shadow-mapSize={[512,512]} />
+        <pointLight position={[0, -0.6, 0]} intensity={8} distance={10} color="#ffd080" castShadow shadow-mapSize={[512,512]} />
       </group>
-      {/* Back wall — warm white with wainscoting */}
-      <mesh position={[0, WH / 2, -HD]} rotation={[0, 0, 0]} receiveShadow>
+      {/* Second pendant */}
+      <group position={[2.5, WH - 0.01, -0.5]}>
+        <Cylinder args={[0.006, 0.006, 0.7, 6]} position={[0, -0.35, 0]}>
+          <meshStandardMaterial color="#333340" metalness={0.8} roughness={0.2} />
+        </Cylinder>
+        <mesh position={[0, -0.72, 0]}>
+          <cylinderGeometry args={[0.14, 0.06, 0.18, 16, 1, true]} />
+          <meshStandardMaterial color="#1a1a2e" roughness={0.3} metalness={0.6} side={THREE.DoubleSide} />
+        </mesh>
+        <pointLight position={[0, -0.78, 0]} intensity={5} distance={7} color="#ffc860" />
+      </group>
+      {/* Back wall — dark charcoal */}
+      <mesh position={[0, WH / 2, -HD]} receiveShadow>
         <planeGeometry args={[RW, WH]} />
-        <meshStandardMaterial color="#f0eadc" roughness={0.9} />
+        <meshStandardMaterial color="#0f0f1e" roughness={0.85} />
       </mesh>
-      {/* Wainscoting panels */}
-      {[-3.5, -1.2, 1.2, 3.5].map((px, i) => (
-        <mesh key={i} position={[px, 0.55, -HD + 0.01]}>
-          <boxGeometry args={[1.8, 1.1, 0.02]} />
-          <meshStandardMaterial color="#e8e2d4" roughness={0.88} />
+      {/* Back wall vertical accent panels */}
+      {[-3.2, -0.8, 0.8, 3.2].map((px, i) => (
+        <mesh key={i} position={[px, WH / 2, -HD + 0.015]}>
+          <boxGeometry args={[1.2, WH * 0.85, 0.03]} />
+          <meshStandardMaterial color="#141428" roughness={0.7} />
         </mesh>
       ))}
-      <mesh position={[0, 1.12, -HD + 0.012]}><boxGeometry args={[RW, 0.04, 0.02]} /><meshStandardMaterial color="#d8d0c0" roughness={0.82} /></mesh>
-      <mesh position={[0, 0.04, -HD + 0.012]}><boxGeometry args={[RW, 0.06, 0.02]} /><meshStandardMaterial color="#d8d0c0" roughness={0.82} /></mesh>
-      {/* Left wall */}
+      {/* Horizontal accent trim */}
+      <mesh position={[0, WH * 0.7, -HD + 0.018]}>
+        <boxGeometry args={[RW, 0.05, 0.03]} />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.6} transparent opacity={0.7} />
+      </mesh>
+      {/* Left wall — dark */}
       <mesh position={[-HW, WH / 2, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
         <planeGeometry args={[RD, WH]} />
-        <meshStandardMaterial color="#e8e0d0" roughness={0.9} />
+        <meshStandardMaterial color="#0c0c1c" roughness={0.88} />
       </mesh>
-      {/* Right wall */}
+      {/* Right wall — dark */}
       <mesh position={[HW, WH / 2, 0]} rotation={[0, -Math.PI / 2, 0]}>
         <planeGeometry args={[RD, WH]} />
-        <meshStandardMaterial color="#ede6d8" roughness={0.9} />
+        <meshStandardMaterial color="#0e0e1e" roughness={0.88} />
       </mesh>
-      {/* Accent strip on right wall */}
-      <mesh position={[HW - 0.018, WH - 0.04, 0]} rotation={[0, -Math.PI / 2, 0]}>
-        <boxGeometry args={[RD, 0.04, 0.03]} />
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.5} transparent opacity={0.65} />
+      {/* Accent LED strip on right wall (vertical) */}
+      <mesh position={[HW - 0.02, WH / 2, -1]} rotation={[0, -Math.PI / 2, 0]}>
+        <boxGeometry args={[0.04, WH * 0.9, 0.04]} />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.9} transparent opacity={0.8} />
+      </mesh>
+      {/* Accent LED strip on left wall (vertical) */}
+      <mesh position={[-HW + 0.02, WH / 2, -1]} rotation={[0, Math.PI / 2, 0]}>
+        <boxGeometry args={[0.04, WH * 0.9, 0.04]} />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.7} transparent opacity={0.6} />
       </mesh>
       {/* Front wall */}
       <mesh position={[0, WH / 2, HD]} rotation={[0, Math.PI, 0]}>
         <planeGeometry args={[RW, WH]} />
-        <meshStandardMaterial color="#ece6d8" roughness={0.9} />
+        <meshStandardMaterial color="#0d0d1c" roughness={0.88} />
       </mesh>
-      {/* Skirting */}
+      {/* Floor skirting — glowing */}
       {[
-        { p: [-HW + 0.012, 0.05, 0] as [number,number,number], r: [0, Math.PI/2, 0] as [number,number,number], w: RD },
-        { p: [HW - 0.012, 0.05, 0] as [number,number,number], r: [0, -Math.PI/2, 0] as [number,number,number], w: RD },
-        { p: [0, 0.05, -HD + 0.012] as [number,number,number], r: [0, 0, 0] as [number,number,number], w: RW },
-        { p: [0, 0.05, HD - 0.012] as [number,number,number], r: [0, Math.PI, 0] as [number,number,number], w: RW },
+        { p: [-HW + 0.012, 0.03, 0] as [number,number,number], r: [0, Math.PI/2, 0] as [number,number,number], w: RD },
+        { p: [HW - 0.012, 0.03, 0] as [number,number,number], r: [0, -Math.PI/2, 0] as [number,number,number], w: RD },
+        { p: [0, 0.03, -HD + 0.012] as [number,number,number], r: [0, 0, 0] as [number,number,number], w: RW },
+        { p: [0, 0.03, HD - 0.012] as [number,number,number], r: [0, Math.PI, 0] as [number,number,number], w: RW },
       ].map((b, i) => (
         <mesh key={i} position={b.p} rotation={b.r}>
-          <boxGeometry args={[b.w, 0.1, 0.025]} />
-          <meshStandardMaterial color="#d0c8b8" roughness={0.82} />
+          <boxGeometry args={[b.w, 0.06, 0.02]} />
+          <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.4} transparent opacity={0.5} />
         </mesh>
       ))}
+      {/* Wall art — abstract glowing canvas */}
+      <group position={[-2.8, 1.8, -HD + 0.05]}>
+        <mesh><boxGeometry args={[1.4, 0.9, 0.04]} /><meshStandardMaterial color="#080818" roughness={0.5} /></mesh>
+        <mesh position={[0, 0, 0.025]}><planeGeometry args={[1.28, 0.78]} /><meshStandardMaterial color="#0a0a2a" emissive={color} emissiveIntensity={0.3} /></mesh>
+        {[[-0.3, 0.1], [0.1, -0.2], [0.35, 0.2], [-0.1, -0.1]].map(([ax, ay], i) => (
+          <mesh key={i} position={[ax, ay, 0.03]}>
+            <planeGeometry args={[0.18 + i*0.06, 0.18 + i*0.04]} />
+            <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.6 + i*0.1} transparent opacity={0.4 + i*0.1} />
+          </mesh>
+        ))}
+        <pointLight position={[0, 0, 0.5]} intensity={1.5} distance={2.5} color={color} />
+      </group>
     </group>
   )
 })
@@ -494,11 +549,12 @@ const HomeRoom = memo(({ color }: { color: string }) => {
 function Scene({ color, active }: { color: string; active: boolean }) {
   return (
     <>
-      <ambientLight intensity={2.4} color="#fff8f0" />
-      <directionalLight position={[2, 8, 4]} intensity={2.5} color="#ffe8c0" castShadow shadow-mapSize={[1024, 1024]} shadow-camera-near={0.5} shadow-camera-far={30} shadow-camera-left={-8} shadow-camera-right={8} shadow-camera-top={8} shadow-camera-bottom={-8} shadow-bias={-0.0004} />
-      <directionalLight position={[-4, 4, -6]} intensity={1.2} color="#c8e0ff" />
-      <pointLight position={[0, 2, 3]} intensity={1.2} color="#ffe4a0" distance={14} />
-      <pointLight position={[HW - 1, 1.5, 0]} intensity={0.7} color={color} distance={8} />
+      <ambientLight intensity={0.6} color="#1a1030" />
+      <directionalLight position={[2, 8, 4]} intensity={1.2} color="#ffe0a0" castShadow shadow-mapSize={[1024, 1024]} shadow-camera-near={0.5} shadow-camera-far={30} shadow-camera-left={-8} shadow-camera-right={8} shadow-camera-top={8} shadow-camera-bottom={-8} shadow-bias={-0.0004} />
+      <directionalLight position={[-4, 4, -6]} intensity={0.5} color="#8060ff" />
+      <pointLight position={[0, 2, 3]} intensity={0.8} color="#ffd080" distance={14} />
+      <pointLight position={[HW - 1, 1.5, 0]} intensity={1.2} color={color} distance={10} />
+      <pointLight position={[-HW + 1, 1.5, 0]} intensity={0.8} color={color} distance={8} />
 
       <HomeRoom color={color} />
       <CozyWindow />
@@ -578,7 +634,7 @@ export function HomeOfficeViewer3D({ color, active = true }: { color: string; ac
       shadows
       camera={{ position: [0, 2.2, 7.5], fov: 52 }}
       gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.4 }}
-      style={{ background: '#87ceeb' }}
+      style={{ background: '#080818' }}
     >
       <Suspense fallback={null}>
         <Scene color={color} active={active} />
