@@ -1,35 +1,19 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest } from 'next/server'
-import { verifyToken } from '@clerk/nextjs/server'
+import { corsHeaders } from '@/lib/cors'
+import { getUserId } from '@/lib/auth'
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SECRET_KEY!
 )
 
-const CORS = {
-  'Access-Control-Allow-Origin': 'https://florentina-unnitrogenized-responsibly.ngrok-free.dev',
-  'Access-Control-Allow-Methods': 'POST,OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-}
-
-async function getUserId(req: NextRequest): Promise<string | null> {
-  const authHeader = req.headers.get('authorization')
-  if (!authHeader?.startsWith('Bearer ')) return null
-  const token = authHeader.slice(7)
-  try {
-    const payload = await verifyToken(token, { secretKey: process.env.CLERK_SECRET_KEY! })
-    return payload.sub ?? null
-  } catch {
-    return null
-  }
-}
-
-export async function OPTIONS() {
-  return new Response(null, { status: 204, headers: CORS })
+export async function OPTIONS(req: NextRequest) {
+  return new Response(null, { status: 204, headers: corsHeaders(req, 'POST,OPTIONS') })
 }
 
 export async function POST(req: NextRequest) {
+  const CORS = corsHeaders(req, 'POST,OPTIONS')
   const body = await req.json()
   const { connectionId, userId: bodyUserId } = body
   const userId = (await getUserId(req)) ?? bodyUserId
