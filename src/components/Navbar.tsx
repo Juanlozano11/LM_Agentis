@@ -1,7 +1,10 @@
 import { Link, useLocation } from 'react-router-dom'
+import { useUser, useClerk, SignedIn, SignedOut } from '@clerk/clerk-react'
 
 export function Navbar() {
   const { pathname } = useLocation()
+  const { user } = useUser()
+  const { openSignIn, signOut } = useClerk()
 
   return (
     <nav style={{
@@ -22,14 +25,11 @@ export function Navbar() {
             display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16,
           }}>🏢</div>
           <span style={{ fontWeight: 700, fontSize: 16, color: '#f0f0ff', letterSpacing: '-0.3px' }}>
-            Agent<span style={{
-              background: 'linear-gradient(135deg, #c084fc, #818cf8)',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-            }}>Office</span>
+            Agent<span style={{ background: 'linear-gradient(135deg, #c084fc, #818cf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Office</span>
           </span>
         </Link>
 
-        {/* Links */}
+        {/* Links + auth */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           {[
             { to: '/marketplace', label: 'Marketplace' },
@@ -42,12 +42,31 @@ export function Navbar() {
               background: pathname === to ? 'rgba(255,255,255,0.06)' : 'transparent',
             }}>{label}</Link>
           ))}
-          <Link to="/marketplace" style={{
-            marginLeft: 8, padding: '7px 18px', borderRadius: 10, fontSize: 13,
-            fontWeight: 600, textDecoration: 'none', color: '#fff',
-            background: 'linear-gradient(135deg, #7c3aed, #a855f7)',
-            border: '1px solid rgba(168,85,247,0.4)',
-          }}>Get Started</Link>
+
+          <SignedOut>
+            <button
+              onClick={() => openSignIn({ redirectUrl: '/marketplace' })}
+              style={{
+                marginLeft: 8, padding: '7px 18px', borderRadius: 10, fontSize: 13,
+                fontWeight: 600, cursor: 'pointer', color: '#fff',
+                background: 'linear-gradient(135deg, #7c3aed, #a855f7)',
+                border: '1px solid rgba(168,85,247,0.4)',
+              }}>Get Started</button>
+          </SignedOut>
+
+          <SignedIn>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginLeft: 8 }}>
+              {user?.imageUrl && (
+                <img src={user.imageUrl} alt={user.firstName ?? ''} style={{
+                  width: 32, height: 32, borderRadius: '50%',
+                  border: '2px solid rgba(168,85,247,0.4)', cursor: 'pointer',
+                }} onClick={() => signOut()} title="Sign out" />
+              )}
+              <span style={{ fontSize: 13, color: '#c084fc', fontWeight: 500 }}>
+                {user?.firstName ?? user?.emailAddresses[0]?.emailAddress}
+              </span>
+            </div>
+          </SignedIn>
         </div>
       </div>
     </nav>
