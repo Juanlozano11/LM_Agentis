@@ -549,10 +549,10 @@ const HomeRoom = memo(({ color }: { color: string }) => {
 function Scene({ color, active }: { color: string; active: boolean }) {
   return (
     <>
-      <ambientLight intensity={0.6} color="#1a1030" />
-      <directionalLight position={[2, 8, 4]} intensity={1.2} color="#ffe0a0" castShadow shadow-mapSize={[1024, 1024]} shadow-camera-near={0.5} shadow-camera-far={30} shadow-camera-left={-8} shadow-camera-right={8} shadow-camera-top={8} shadow-camera-bottom={-8} shadow-bias={-0.0004} />
-      <directionalLight position={[-4, 4, -6]} intensity={0.5} color="#8060ff" />
-      <pointLight position={[0, 2, 3]} intensity={0.8} color="#ffd080" distance={14} />
+      <ambientLight intensity={3.5} color="#ffffff" />
+      <directionalLight position={[2, 8, 4]} intensity={3.0} color="#ffffff" castShadow shadow-mapSize={[1024, 1024]} shadow-camera-near={0.5} shadow-camera-far={30} shadow-camera-left={-8} shadow-camera-right={8} shadow-camera-top={8} shadow-camera-bottom={-8} shadow-bias={-0.0004} />
+      <directionalLight position={[-4, 4, -6]} intensity={1.5} color="#e0e8ff" />
+      <pointLight position={[0, 2, 3]} intensity={2.0} color="#ffffff" distance={18} />
       <pointLight position={[HW - 1, 1.5, 0]} intensity={1.2} color={color} distance={10} />
       <pointLight position={[-HW + 1, 1.5, 0]} intensity={0.8} color={color} distance={8} />
 
@@ -563,7 +563,7 @@ function Scene({ color, active }: { color: string; active: boolean }) {
       {/* Main desk setup — centered, facing the window */}
       <group position={[0, 0, -0.8]}>
         <HomeDesk color={color} />
-        <HomeChair />
+        <group position={[0, 0, 0.72]}><HomeChair /></group>
         <DualMonitor color={color} active={active} />
         {/* Worker sitting at desk */}
         <group position={[0, 0, 0.92]}>

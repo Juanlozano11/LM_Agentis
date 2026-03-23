@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useUser, useClerk } from '@clerk/clerk-react'
 import { useAuthFetch } from '../lib/api'
+import { GoogleWorkspaceConnect } from '../components/GoogleWorkspaceConnect'
 
 const HomeOfficeViewer3D = lazy(() => import('../components/HomeOfficeViewer3D').then(m => ({ default: m.HomeOfficeViewer3D })))
 
@@ -26,6 +27,7 @@ export function GeneralAgentDetail() {
   const authFetch = useAuthFetch()
   const [activating, setActivating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showGoogleConnect, setShowGoogleConnect] = useState(false)
 
   const handleActivate = async () => {
     if (!isSignedIn) {
@@ -49,7 +51,16 @@ export function GeneralAgentDetail() {
         return
       }
 
-      // Activado — ir al dashboard
+      const data = await res.json()
+
+      // If Google Workspace not connected yet, show OAuth flow first
+      if (data.requiresGoogleAuth) {
+        setActivating(false)
+        setShowGoogleConnect(true)
+        return
+      }
+
+      // Already connected — go to dashboard
       navigate('/dashboard')
     } catch (e: any) {
       setError(e.message)
@@ -59,6 +70,29 @@ export function GeneralAgentDetail() {
 
   return (
     <div style={{ background: '#07070f', minHeight: '100vh', paddingTop: 60 }}>
+
+      {/* Google Workspace OAuth modal */}
+      <AnimatePresence>
+        {showGoogleConnect && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(0,0,0,0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
+          >
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+              style={{ width: '100%', maxWidth: 480, borderRadius: 20, background: '#0d0d1e', border: '1px solid rgba(168,85,247,0.3)', padding: 32 }}>
+              <h2 style={{ color: '#f0f0ff', fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Connect Google Workspace</h2>
+              <p style={{ color: '#7777aa', fontSize: 13, marginBottom: 24 }}>
+                Connect your Google account so the agent can manage your Gmail, Calendar, and Drive directly from chat.
+              </p>
+              <GoogleWorkspaceConnect
+                authFetch={authFetch}
+                onConnected={() => { setShowGoogleConnect(false); navigate('/dashboard') }}
+                onSkip={() => { setShowGoogleConnect(false); navigate('/dashboard') }}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Hero */}
       <div style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'radial-gradient(ellipse at 20% 50%, rgba(168,85,247,0.1), transparent 60%)' }}>

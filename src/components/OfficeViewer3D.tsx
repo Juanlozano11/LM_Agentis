@@ -115,23 +115,23 @@ const CityView = memo(({ color }: { color: string }) => {
 
   return (
     <group>
-      {/* Sky dome — gradient using stacked planes */}
+      {/* Sky dome — bright daytime gradient */}
       <mesh position={[0, 22, -HD - 5]}>
         <planeGeometry args={[100, 30]} />
-        <meshStandardMaterial color="#1a4a7a" emissive="#1040708" emissiveIntensity={0.5} side={THREE.DoubleSide} />
+        <meshStandardMaterial color="#87ceeb" emissive="#60a8d8" emissiveIntensity={0.6} side={THREE.DoubleSide} />
       </mesh>
       <mesh position={[0, 14, -HD - 4]}>
         <planeGeometry args={[100, 16]} />
-        <meshStandardMaterial color="#2a6090" emissive="#204878" emissiveIntensity={0.4} transparent opacity={0.9} side={THREE.DoubleSide} />
+        <meshStandardMaterial color="#a8d8f0" emissive="#80c0e8" emissiveIntensity={0.5} transparent opacity={0.95} side={THREE.DoubleSide} />
       </mesh>
       <mesh position={[0, 7, -HD - 3]}>
         <planeGeometry args={[100, 10]} />
-        <meshStandardMaterial color="#4882b0" emissive="#386898" emissiveIntensity={0.35} transparent opacity={0.8} side={THREE.DoubleSide} />
+        <meshStandardMaterial color="#c0e4f8" emissive="#90cce8" emissiveIntensity={0.4} transparent opacity={0.9} side={THREE.DoubleSide} />
       </mesh>
       {/* Horizon haze */}
       <mesh position={[0, 1, -HD - 2]}>
         <planeGeometry args={[100, 8]} />
-        <meshStandardMaterial color="#88b0cc" emissive="#6090aa" emissiveIntensity={0.3} transparent opacity={0.6} side={THREE.DoubleSide} />
+        <meshStandardMaterial color="#ddf0fa" emissive="#b0d8ee" emissiveIntensity={0.3} transparent opacity={0.7} side={THREE.DoubleSide} />
       </mesh>
       {/* City ground (far below — simulates height) */}
       <mesh position={[0, -28, -HD - 6]} rotation={[-Math.PI / 2, 0, 0]}>
@@ -713,7 +713,10 @@ const WorkStation = memo(({ agent, position, color, index, selected, onSelect }:
     >
       {/* Desk furniture */}
       <OfficeDsk color={color} variant={index} />
-      <OfficChair />
+      {/* Chair positioned behind desk so agent sits correctly */}
+      <group position={[0, 0, 0.72]}>
+        <OfficChair />
+      </group>
       {/* Monitor */}
       <DeskMonitor agent={agent} color={color} active={active} />
       {/* Seated human — placed at chair position: [0, 0, +0.92] within desk group */}
@@ -895,10 +898,10 @@ const OfficeRoom = memo(({ color }: { color: string }) => {
         <meshStandardMaterial color="#ece8e0" roughness={0.9} />
       </mesh>
 
-      {/* Right wall — dark corporate accent */}
+      {/* Right wall — light warm white like the others */}
       <mesh position={[HW, WH / 2, 0]} rotation={[0, -Math.PI / 2, 0]}>
         <planeGeometry args={[FD, WH]} />
-        <meshStandardMaterial color="#1a1a28" roughness={0.82} metalness={0.06} />
+        <meshStandardMaterial color="#ece8e0" roughness={0.9} metalness={0.0} />
       </mesh>
       {/* Accent wall glow strips */}
       <mesh position={[HW - 0.022, WH - 0.055, 0]} rotation={[0, -Math.PI / 2, 0]}>
@@ -937,11 +940,11 @@ function Scene({ agents, color, selectedId, onSelect }: {
 }) {
   return (
     <>
-      {/* Base ambient — very generous, no dark corners */}
-      <ambientLight intensity={2.8} color="#f8f4ee" />
-      {/* Primary sun through windows */}
+      {/* Base ambient — bright, day-office feel */}
+      <ambientLight intensity={4.5} color="#ffffff" />
+      {/* Primary daylight through windows */}
       <directionalLight
-        position={[-3, 10, -16]} intensity={3.5} color="#cce0ff"
+        position={[-3, 10, -16]} intensity={5.0} color="#ddeeff"
         castShadow shadow-mapSize={[1024, 1024]}
         shadow-camera-near={0.5} shadow-camera-far={40}
         shadow-camera-left={-14} shadow-camera-right={14}
@@ -949,11 +952,11 @@ function Scene({ agents, color, selectedId, onSelect }: {
         shadow-bias={-0.0004}
       />
       {/* Warm interior fill */}
-      <directionalLight position={[4, 6, 9]} intensity={2.0} color="#fff4e8" />
+      <directionalLight position={[4, 6, 9]} intensity={3.5} color="#ffffff" />
       {/* Room bounce light */}
-      <pointLight position={[0, 3, 3]} intensity={1.5} color="#ffe4c0" distance={20} />
+      <pointLight position={[0, 3, 3]} intensity={2.5} color="#ffffff" distance={25} />
       {/* Right accent wall glow */}
-      <pointLight position={[HW - 1.2, 2, 0]} intensity={0.9} color={color} distance={12} />
+      <pointLight position={[HW - 1.2, 2, 0]} intensity={1.2} color={color} distance={14} />
 
       <OfficeRoom color={color} />
       <CityView color={color} />
@@ -1030,9 +1033,9 @@ export function OfficeViewer3D({ agents, color, onAgentSelect }: {
       gl={{
         antialias: true,
         toneMapping: THREE.ACESFilmicToneMapping,
-        toneMappingExposure: 1.5,
+        toneMappingExposure: 1.0,
       }}
-      style={{ background: '#5a90b8' }}
+      style={{ background: '#a8d4f0' }}
     >
       <Suspense fallback={null}>
         <Scene agents={agents} color={color} selectedId={selectedId} onSelect={handleSelect} />

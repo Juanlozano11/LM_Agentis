@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { API_URL } from '../lib/api'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -36,7 +37,7 @@ export function AgentChat({ onClose }: { onClose: () => void }) {
     ])
 
     try {
-      const res = await fetch('/api/agent', {
+      const res = await fetch(`${API_URL}/api/agent`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text, userId: 'test-user' }),

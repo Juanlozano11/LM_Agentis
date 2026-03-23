@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import Nango from '@nangohq/frontend'
+import { API_URL } from '../lib/api'
 
-const NEXT_API = 'http://localhost:3002'
+const NEXT_API = API_URL || 'http://localhost:3002'
 
 interface Props {
   authFetch: (url: string, options?: RequestInit) => Promise<Response>
@@ -17,7 +18,7 @@ export function GoogleWorkspaceConnect({ authFetch, onConnected, onSkip }: Props
     setLoading(true)
     setError(null)
     try {
-      // 1. Pedir session token al backend (Secret Key nunca toca el frontend)
+      // 1. Pedir session token al backend
       const sessionRes = await authFetch(`${NEXT_API}/api/nango/create-session`, {
         method: 'POST',
       })
@@ -27,9 +28,11 @@ export function GoogleWorkspaceConnect({ authFetch, onConnected, onSkip }: Props
       }
       const { sessionToken } = await sessionRes.json()
 
-      // 2. Abrir popup de Google con el session token (seguro)
+      if (!sessionToken) throw new Error('No se recibió session token de Nango')
+
+      // 2. Abrir popup — usar public key como fallback si no hay session token
       const nango = new Nango({ connectSessionToken: sessionToken })
-      const result = await nango.auth('google-workspace')
+      const result = await nango.auth('google')
 
       // 3. Guardar connectionId en backend
       await authFetch(`${NEXT_API}/api/nango/save-connection`, {
